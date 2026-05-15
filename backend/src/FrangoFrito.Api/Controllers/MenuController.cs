@@ -1,8 +1,6 @@
 using FrangoFrito.Application.Menu;
-using FrangoFrito.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FrangoFrito.Api.Controllers;
 
@@ -10,36 +8,18 @@ namespace FrangoFrito.Api.Controllers;
 [Route("api/menu")]
 public sealed class MenuController : ControllerBase
 {
-    private readonly FrangoFritoDbContext _dbContext;
+    private readonly IMenuService _menuService;
 
-    public MenuController(FrangoFritoDbContext dbContext)
+    public MenuController(IMenuService menuService)
     {
-        _dbContext = dbContext;
+        _menuService = menuService;
     }
 
     [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyCollection<MenuCategoryDto>>> Get(CancellationToken cancellationToken)
     {
-        var categories = await _dbContext.Categories
-            .AsNoTracking()
-            .Where(category => category.IsActive)
-            .Include(category => category.Products.Where(product => product.IsActive))
-            .OrderBy(category => category.Name)
-            .ToArrayAsync(cancellationToken);
-
-        var menu = categories
-            .Select(category => new MenuCategoryDto(
-                category.Id,
-                category.Name,
-                category.Description,
-                category.Products
-                    .Where(product => product.IsActive)
-                    .OrderBy(product => product.Name)
-                    .Select(product => new MenuProductDto(product.Id, product.Name, product.Description, product.Price, product.ImageUrl))
-                    .ToArray()))
-            .ToArray();
-
+        var menu = await _menuService.GetAsync(cancellationToken);
         return Ok(menu);
     }
 }

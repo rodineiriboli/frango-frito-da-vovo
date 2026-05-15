@@ -27,7 +27,7 @@ public sealed class CategoriesApiTests : IClassFixture<CustomWebApplicationFacto
         var body = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
-        Assert.Contains("Categorias vinculadas a produtos nao podem ser excluidas.", body);
+        Assert.Contains("Categorias vinculadas a produtos não podem ser excluídas.", body);
     }
 
     [Fact]

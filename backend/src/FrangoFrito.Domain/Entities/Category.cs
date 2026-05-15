@@ -34,7 +34,7 @@ public sealed class Category : Entity
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            throw new DomainException("Nome da categoria e obrigatorio.");
+            throw new DomainException("Nome da categoria é obrigatório.");
         }
 
         Name = name.Trim();

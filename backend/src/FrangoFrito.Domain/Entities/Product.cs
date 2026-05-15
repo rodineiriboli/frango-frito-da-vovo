@@ -19,7 +19,7 @@ public sealed class Product : Entity
         Rename(name);
         UpdateDescription(description);
         ChangePrice(price);
-        CategoryId = categoryId == Guid.Empty ? throw new DomainException("Categoria e obrigatoria.") : categoryId;
+        CategoryId = categoryId == Guid.Empty ? throw new DomainException("Categoria é obrigatória.") : categoryId;
         ImageUrl = imageUrl?.Trim() ?? string.Empty;
         IsActive = isActive;
     }
@@ -43,7 +43,7 @@ public sealed class Product : Entity
         Rename(name);
         UpdateDescription(description);
         ChangePrice(price);
-        CategoryId = categoryId == Guid.Empty ? throw new DomainException("Categoria e obrigatoria.") : categoryId;
+        CategoryId = categoryId == Guid.Empty ? throw new DomainException("Categoria é obrigatória.") : categoryId;
         IsActive = isActive;
         ImageUrl = imageUrl?.Trim() ?? string.Empty;
     }
@@ -56,7 +56,7 @@ public sealed class Product : Entity
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            throw new DomainException("Nome do produto e obrigatorio.");
+            throw new DomainException("Nome do produto é obrigatório.");
         }
 
         Name = name.Trim();
@@ -71,7 +71,7 @@ public sealed class Product : Entity
     {
         if (price <= 0)
         {
-            throw new DomainException("Preco do produto deve ser maior que zero.");
+            throw new DomainException("Preço do produto deve ser maior que zero.");
         }
 
         Price = Math.Round(price, 2);

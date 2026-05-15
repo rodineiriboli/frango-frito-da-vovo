@@ -18,6 +18,6 @@ public sealed class MenuApiTests : IClassFixture<CustomWebApplicationFactory>
 
         response.EnsureSuccessStatusCode();
         var body = await response.Content.ReadAsStringAsync();
-        Assert.Contains("Balde da Vovo", body);
+        Assert.Contains("Balde da Vovó", body);
     }
 }

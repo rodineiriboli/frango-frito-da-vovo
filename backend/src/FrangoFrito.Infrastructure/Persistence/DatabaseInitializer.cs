@@ -1,9 +1,10 @@
 using FrangoFrito.Infrastructure.Identity;
+using FrangoFrito.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FrangoFrito.Infrastructure.Persistence;
+namespace FrangoFrito.Infrastructure;
 
 public static class DatabaseInitializer
 {

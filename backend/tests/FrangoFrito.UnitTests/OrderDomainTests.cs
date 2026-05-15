@@ -9,7 +9,7 @@ public sealed class OrderDomainTests
     [Fact]
     public void AddItem_ShouldRejectInactiveProduct()
     {
-        var product = new Product("Coxa crocante", "Porcao", 29.90m, Guid.NewGuid(), isActive: false);
+        var product = new Product("Coxa crocante", "Porção", 29.90m, Guid.NewGuid(), isActive: false);
         var order = new Order(Guid.NewGuid());
 
         Assert.Throws<DomainException>(() => order.AddItem(product, 1));
@@ -18,7 +18,7 @@ public sealed class OrderDomainTests
     [Fact]
     public void AddItem_ShouldMergeRepeatedProductAndCalculateTotal()
     {
-        var product = new Product("Balde da Vovo", "Combo", 79.90m, Guid.NewGuid());
+        var product = new Product("Balde da Vovó", "Combo", 79.90m, Guid.NewGuid());
         var order = new Order(Guid.NewGuid());
 
         order.AddItem(product, 1);

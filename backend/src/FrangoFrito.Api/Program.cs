@@ -1,7 +1,7 @@
 using FrangoFrito.Api.Middleware;
+using FrangoFrito.Application;
 using FrangoFrito.Application.Security;
 using FrangoFrito.Infrastructure;
-using FrangoFrito.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.ConfigureApplicationCookie(options =>

@@ -12,7 +12,7 @@ public sealed class OrderItem : Entity
     {
         if (!product.IsActive)
         {
-            throw new DomainException("Produto inativo nao pode ser adicionado ao pedido.");
+            throw new DomainException("Produto inativo não pode ser adicionado ao pedido.");
         }
 
         ProductId = product.Id;

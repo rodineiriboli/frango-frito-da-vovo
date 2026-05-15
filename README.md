@@ -1,8 +1,8 @@
-# Frango Frito da Vovo
+# Frango Frito da Vovó
 
-CRUD full stack para um painel administrativo de delivery de frango frito, criado como projeto de teste para vaga .NET senior.
+CRUD full stack para um painel administrativo de delivery de frango frito, criado como projeto de teste para vaga de desenvolvedor .NET sênior.
 
-O foco do projeto nao e ter um escopo enorme, mas demonstrar uma entrega pequena com decisoes de producao: arquitetura em camadas, regras de dominio, autenticacao, autorizacao por perfis, PostgreSQL, Docker, frontend responsivo e testes.
+O objetivo não é entregar um escopo enorme, mas demonstrar uma aplicação pequena tratada com padrão de produção: Clean Architecture, SOLID, autenticação, autorização por perfis, regras de domínio, PostgreSQL, Docker, frontend responsivo e testes automatizados.
 
 ## Stack
 
@@ -13,10 +13,10 @@ Backend:
 - Entity Framework Core
 - PostgreSQL
 - ASP.NET Core Identity
-- Cookie HttpOnly para autenticacao
-- Autorizacao por roles/policies
+- Cookie HttpOnly para autenticação
+- Autorização por roles e policies
 - OpenAPI em ambiente de desenvolvimento
-- xUnit com testes unitarios e de integracao
+- xUnit para testes unitários e de integração
 
 Frontend:
 
@@ -28,77 +28,92 @@ Frontend:
 - React Hook Form
 - Zod
 - lucide-react
-- Layout responsivo mobile/desktop com largura maxima de 1440px
+- Layout responsivo para celular e desktop
+- Largura máxima de 1440px em navegadores desktop
 
-Infra:
+Infraestrutura:
 
 - Docker
 - Docker Compose
 - PostgreSQL containerizado
+- Health check da API
 
-## Como rodar com Docker
+## Como Rodar Com Docker
+
+Pré-requisitos:
+
+- Docker Desktop instalado
+- Docker Compose disponível no terminal
 
 Na raiz do projeto:
 
-```bash
+```powershell
 docker compose up --build
 ```
 
-Observacao: o Dockerfile da API usa `mcr.microsoft.com/dotnet/sdk:10.0.200` de forma explicita porque a tag flutuante `sdk:10.0`, no momento do desenvolvimento, baixou o SDK `10.0.300` e falhou no Docker Desktop com erro de leitura do `dotnet.runtimeconfig.json`. O runtime final continua usando `mcr.microsoft.com/dotnet/aspnet:10.0`.
+Ou, para rodar em segundo plano:
 
-URLs:
+```powershell
+docker compose up -d --build
+```
+
+URLs principais:
 
 - Frontend: http://localhost:3000
 - API: http://localhost:8080
 - Health check: http://localhost:8080/health
-- OpenAPI JSON: http://localhost:8080/openapi/v1.json
+- OpenAPI: http://localhost:8080/openapi/v1.json
 
-O banco PostgreSQL sobe com:
+Banco de dados:
 
-```text
-Host: localhost
-Porta: 5432
-Database: frango_frito_da_vovo
-Usuario: postgres
-Senha: postgres
-```
+- Host: `localhost`
+- Porta: `5432`
+- Database: `frango_frito_da_vovo`
+- Usuário: `postgres`
+- Senha: `postgres`
 
-## Usuarios seed
+Observação sobre .NET 10 no Docker:
 
-Todos usam a senha:
+O Dockerfile da API fixa a imagem `mcr.microsoft.com/dotnet/sdk:10.0.200`, pois a tag genérica `sdk:10.0` pode resolver para uma versão de SDK que apresentou falha de runtime no ambiente local durante o `dotnet restore`.
+
+## Usuários Seed
+
+A senha inicial para todos os usuários seed é:
 
 ```text
 Vovo@12345
 ```
 
-Perfis:
+Usuários criados automaticamente:
 
-```text
-admin@frangofrito.local       Admin
-atendente@frangofrito.local   Atendente
-cozinha@frangofrito.local     Cozinha
-entregador@frangofrito.local  Entregador
-```
+| Perfil | E-mail |
+| --- | --- |
+| Admin | `admin@frangofrito.local` |
+| Atendente | `atendente@frangofrito.local` |
+| Cozinha | `cozinha@frangofrito.local` |
+| Entregador | `entregador@frangofrito.local` |
 
-## Como rodar localmente
+Caso o volume do PostgreSQL já exista, alterações recentes nos dados seed podem não aparecer automaticamente. Para recriar tudo do zero, remova o volume do banco antes de subir novamente os containers.
+
+## Como Rodar Localmente
 
 Suba apenas o PostgreSQL:
 
-```bash
+```powershell
 docker compose up postgres
 ```
 
 Backend:
 
-```bash
-cd backend
-dotnet restore
-dotnet run --project src/FrangoFrito.Api
+```powershell
+dotnet restore backend/src/FrangoFrito.Api/FrangoFrito.Api.csproj
+dotnet build backend/src/FrangoFrito.Api/FrangoFrito.Api.csproj
+dotnet run --project backend/src/FrangoFrito.Api/FrangoFrito.Api.csproj
 ```
 
 Frontend:
 
-```bash
+```powershell
 cd frontend
 npm install
 npm run dev
@@ -109,97 +124,287 @@ URLs locais:
 - Frontend Vite: http://localhost:5173
 - API local: http://localhost:5080
 
-## Testes e qualidade
+## Testes E Qualidade
 
 Backend:
 
-```bash
-cd backend
-dotnet test
+```powershell
+dotnet test backend/tests/FrangoFrito.UnitTests/FrangoFrito.UnitTests.csproj
+dotnet test backend/tests/FrangoFrito.IntegrationTests/FrangoFrito.IntegrationTests.csproj
 ```
 
 Frontend:
 
-```bash
+```powershell
 cd frontend
 npm test
 npm run build
 ```
 
-## Escopo funcional
+Validações executadas durante a implementação:
 
-- Login/logout
-- Usuario autenticado atual
-- Roles: Admin, Atendente, Cozinha, Entregador
+- Build da API com sucesso
+- Testes unitários do backend com sucesso
+- Testes de integração do backend com sucesso
+- Build do frontend com sucesso
+- Testes do frontend com sucesso
+- Build da API via Docker Compose com sucesso
+- Health check da API retornando `Healthy`
+
+## Escopo Funcional
+
+Funcionalidades implementadas:
+
+- Login com cookie HttpOnly
+- Logout com redirecionamento para a tela de login
+- Consulta do usuário autenticado
+- Controle de acesso por perfil
+- Dashboard administrativo
 - CRUD de categorias
+- Exclusão de categoria somente quando ela não está em uso
 - CRUD de produtos
+- Desativação de produto em vez de exclusão física
 - CRUD de clientes
-- Criacao de pedidos
-- Itens de pedido
-- Fluxo de status do pedido
-- Cardapio publico de produtos ativos
-- Filtros, busca e paginacao nos principais endpoints
-- Seed inicial de usuarios, categorias, produtos e clientes
+- Criação e consulta de pedidos
+- Fluxo de alteração de status do pedido
+- Consulta de cardápio público
+- Tratamento de erros com mensagens apresentáveis no frontend
+- Layout responsivo para dispositivos móveis e desktop
 
-## Autenticacao e autorizacao
+## Autenticação E Autorização
 
-A autenticacao usa ASP.NET Core Identity com cookie HttpOnly. A escolha evita expor token em `localStorage` e deixa a seguranca principal no backend.
+A autenticação é implementada com ASP.NET Core Identity e cookie HttpOnly.
 
-O frontend apenas adapta a navegacao conforme as roles do usuario. A autorizacao real fica na API por roles e policies.
+Decisões principais:
 
-Perfis:
+- O frontend não manipula token JWT diretamente.
+- A sessão fica protegida em cookie HttpOnly.
+- A API expõe endpoints para login, logout e usuário atual.
+- O backend valida autenticação e autorização em todas as rotas protegidas.
+- O frontend adapta navegação e ações conforme as roles do usuário.
 
-- Admin: gerencia categorias, produtos, clientes, pedidos e usuarios.
-- Atendente: cadastra clientes e cria/cancela pedidos.
-- Cozinha: acompanha pedidos recebidos e inicia preparo.
-- Entregador: acompanha entregas e conclui pedidos.
+Perfis atuais:
 
-## Arquitetura
+- `Admin`
+- `Atendente`
+- `Cozinha`
+- `Entregador`
+
+## Clean Architecture
+
+O backend segue Clean Architecture com separação explícita entre domínio, aplicação, infraestrutura e API.
+
+Direção das dependências:
+
+```text
+FrangoFrito.Api -> FrangoFrito.Application -> FrangoFrito.Domain
+FrangoFrito.Infrastructure -> FrangoFrito.Application
+FrangoFrito.Infrastructure -> FrangoFrito.Domain
+```
+
+Regras importantes:
+
+- `Domain` não depende de nenhum outro projeto.
+- `Application` depende apenas de `Domain`.
+- `Infrastructure` implementa contratos definidos em `Application`.
+- `Api` consome casos de uso e abstrações da camada de aplicação.
+- Controllers não recebem `DbContext`.
+- Controllers não dependem de Entity Framework Core.
+- Controllers não dependem diretamente de `UserManager`, `SignInManager` ou entidades de domínio.
+
+Estrutura do backend:
 
 ```text
 backend/
   src/
-    FrangoFrito.Api
-    FrangoFrito.Application
-    FrangoFrito.Domain
-    FrangoFrito.Infrastructure
+    FrangoFrito.Api/
+      Controllers/
+      Extensions/
+      Middleware/
+      Program.cs
+    FrangoFrito.Application/
+      Auth/
+      Categories/
+      Common/
+      Customers/
+      Menu/
+      Orders/
+      Products/
+      Security/
+    FrangoFrito.Domain/
+      Common/
+      Entities/
+      Enums/
+      ValueObjects/
+    FrangoFrito.Infrastructure/
+      Identity/
+      Persistence/
+        Migrations/
+        Repositories/
+      Security/
+      Services/
+      DependencyInjection.cs
   tests/
-    FrangoFrito.UnitTests
-    FrangoFrito.IntegrationTests
+    FrangoFrito.UnitTests/
+    FrangoFrito.IntegrationTests/
+```
 
+## Application Layer
+
+A camada de aplicação concentra os casos de uso e define os contratos que a infraestrutura deve implementar.
+
+Responsabilidades:
+
+- Orquestrar regras de aplicação
+- Validar fluxos antes de persistir alterações
+- Expor DTOs de entrada e saída
+- Definir contratos de repositório
+- Definir `IUnitOfWork`
+- Definir serviços de autenticação e usuário atual
+- Retornar resultados padronizados com `ApplicationResult`
+
+Exemplos de abstrações:
+
+- `ICategoryRepository`
+- `IProductRepository`
+- `ICustomerRepository`
+- `IOrderRepository`
+- `IMenuRepository`
+- `IUnitOfWork`
+- `IAuthService`
+- `IUserService`
+- `ICurrentUser`
+
+Essa camada não conhece Entity Framework Core, ASP.NET Core, PostgreSQL ou Identity.
+
+## Repository Pattern
+
+O acesso a dados é feito por repositórios específicos por contexto de negócio.
+
+Objetivos:
+
+- Evitar vazamento de detalhes do EF Core para a API
+- Facilitar testes unitários de casos de uso
+- Manter a camada de aplicação dependente de abstrações
+- Centralizar consultas necessárias para cada agregado
+- Reduzir acoplamento entre controllers, persistência e regras de negócio
+
+A persistência é concluída por meio de `IUnitOfWork`, mantendo o controle transacional fora dos controllers.
+
+## Domain Layer
+
+A camada de domínio concentra entidades, enums, regras de negócio e erros de domínio.
+
+Exemplos de regras tratadas no domínio:
+
+- Produto não pode ser criado com preço inválido
+- Pedido controla seu próprio fluxo de status
+- Categoria mantém consistência de nome e descrição
+- Entidades usam identificadores fortes e encapsulam estado
+
+## Infrastructure Layer
+
+A infraestrutura implementa contratos da aplicação.
+
+Responsabilidades:
+
+- `FrangoFritoDbContext`
+- Mapeamentos do EF Core
+- Repositórios concretos
+- `UnitOfWork`
+- Migrations
+- Seed de dados
+- Integração com ASP.NET Core Identity
+- Implementações de autenticação e usuário atual
+
+## API Layer
+
+A API é responsável por HTTP, autenticação, autorização, serialização e adaptação de resultados.
+
+Responsabilidades:
+
+- Controllers enxutos
+- Mapeamento de `ApplicationResult` para respostas HTTP
+- `ProblemDetails` para erros
+- Registro de dependências
+- Configuração de CORS
+- Configuração de cookies
+- Health check
+- OpenAPI em desenvolvimento
+
+## Frontend
+
+O frontend foi organizado por domínio funcional, evitando concentrar a aplicação inteira em um único `App.tsx`.
+
+Estrutura principal:
+
+```text
 frontend/
   src/
+    app/
+      layout/
+      App.tsx
+      AppRoutes.tsx
+    features/
+      auth/
+      categories/
+      customers/
+      dashboard/
+      menu/
+      orders/
+      products/
     shared/
+      api/
+      components/
+      constants/
+      utils/
     App.tsx
+    main.tsx
     styles.css
 ```
 
-Principios usados:
+Decisões principais:
 
-- Regras de negocio no dominio.
-- EF Core isolado na infraestrutura.
-- DTOs separados das entidades.
-- Identity isolado da API.
-- Erros de dominio convertidos para `ProblemDetails`.
-- Controle de concorrencia por token de versao nas entidades.
-- Migrations versionadas.
-- Frontend com estados de loading, erro e vazio.
+- `app` concentra composição geral, providers, rotas e layout.
+- `features` concentra telas, componentes e hooks por domínio.
+- `shared` concentra componentes reutilizáveis, cliente HTTP, constantes e utilitários.
+- `App.tsx` da raiz apenas delega para a aplicação real.
+- TanStack Query centraliza cache e estado assíncrono.
+- React Hook Form e Zod tratam formulários e validações.
+- A interface usa vermelho e amarelo como identidade visual inspirada no iFood.
+- O layout foi pensado para celular e navegador desktop, com largura máxima de 1440px.
 
-## Decisoes visuais
+## Decisões De Produção
 
-O frontend usa uma identidade inspirada em delivery, com vermelho e amarelo como cores principais, sem uso de marca, logo ou assets proprietarios de terceiros.
+Principais cuidados aplicados:
 
-O layout foi pensado para:
+- SOLID como princípio obrigatório
+- Controllers sem dependência direta de `DbContext`
+- Dependência de abstrações em vez de classes concretas
+- Separação clara de responsabilidades
+- Casos de uso testáveis sem banco real
+- Regras de domínio fora dos controllers
+- EF Core isolado na infraestrutura
+- Identity isolado atrás de serviços de aplicação
+- DTOs separados das entidades de domínio
+- Erros de aplicação convertidos para HTTP de forma padronizada
+- Mensagens em português com acentuação revisada
+- Controle de concorrência em entidades relevantes
+- Exclusão protegida para categorias em uso
+- Desativação lógica para produtos
+- Docker Compose para ambiente reprodutível
 
-- celular;
-- tablet;
-- navegador desktop;
-- largura maxima de conteudo em 1440px.
+## Próximos Passos Possíveis
 
-## Proximos passos possiveis
+Melhorias recomendadas caso o projeto evolua:
 
-- Refresh de sessao mais refinado.
-- Auditoria por usuario.
-- Upload real de imagens de produto.
-- Testes end-to-end com Playwright.
-- Pipeline de deploy.
+- Adicionar paginação e filtros avançados nas listagens
+- Adicionar FluentValidation na camada de aplicação
+- Adicionar logs estruturados com Serilog
+- Adicionar observabilidade com OpenTelemetry
+- Adicionar testes end-to-end com Playwright
+- Adicionar pipeline de CI com build, testes e análise estática
+- Adicionar rate limiting nos endpoints de autenticação
+- Adicionar refresh de sessão por política explícita
+- Adicionar tela de gestão de usuários e perfis
+- Adicionar auditoria de alterações relevantes

@@ -5,9 +5,9 @@ using FrangoFrito.Application.Products;
 using FrangoFrito.Domain.Entities;
 using FrangoFrito.Domain.ValueObjects;
 
-namespace FrangoFrito.Api.Extensions;
+namespace FrangoFrito.Application.Common;
 
-public static class MappingExtensions
+public static class DtoMappingExtensions
 {
     public static CategoryDto ToDto(this Category category) =>
         new(category.Id, category.Name, category.Description, category.IsActive, category.CreatedAt, category.UpdatedAt);

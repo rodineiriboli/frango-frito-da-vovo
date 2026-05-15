@@ -1,9 +1,9 @@
 using FrangoFrito.Application.Common;
 using Microsoft.EntityFrameworkCore;
 
-namespace FrangoFrito.Api.Extensions;
+namespace FrangoFrito.Infrastructure.Persistence;
 
-public static class QueryExtensions
+internal static class QueryableExtensions
 {
     public static async Task<PagedResult<T>> ToPagedResultAsync<T>(
         this IQueryable<T> query,

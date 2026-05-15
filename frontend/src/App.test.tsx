@@ -37,7 +37,7 @@ describe('App', () => {
       if (url.includes('/auth/me')) {
         return new Response(JSON.stringify({
           id: '019e28f8-c0dd-76bb-a60e-ac0468b87a78',
-          fullName: 'Admin Vovo',
+          fullName: 'Admin Vovó',
           email: 'admin@frangofrito.local',
           roles: ['Admin'],
         }), {

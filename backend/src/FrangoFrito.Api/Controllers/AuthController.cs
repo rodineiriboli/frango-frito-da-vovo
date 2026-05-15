@@ -1,7 +1,6 @@
+using FrangoFrito.Api.Extensions;
 using FrangoFrito.Application.Auth;
-using FrangoFrito.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrangoFrito.Api.Controllers;
@@ -10,39 +9,26 @@ namespace FrangoFrito.Api.Controllers;
 [Route("api/auth")]
 public sealed class AuthController : ControllerBase
 {
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly IAuthService _authService;
 
-    public AuthController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
+    public AuthController(IAuthService authService)
     {
-        _signInManager = signInManager;
-        _userManager = userManager;
+        _authService = authService;
     }
 
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult<AuthUserDto>> Login(LoginRequest request)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email.Trim());
-        if (user is null)
-        {
-            return UnauthorizedProblem();
-        }
-
-        var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, lockoutOnFailure: true);
-        if (!result.Succeeded)
-        {
-            return UnauthorizedProblem();
-        }
-
-        return Ok(await ToDtoAsync(user));
+        var result = await _authService.LoginAsync(request);
+        return result.Succeeded ? Ok(result.Value) : result.ToActionResult(this);
     }
 
     [Authorize]
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
-        await _signInManager.SignOutAsync();
+        await _authService.SignOutAsync();
         return NoContent();
     }
 
@@ -50,16 +36,7 @@ public sealed class AuthController : ControllerBase
     [HttpGet("me")]
     public async Task<ActionResult<AuthUserDto>> Me()
     {
-        var user = await _userManager.GetUserAsync(User);
-        return user is null ? UnauthorizedProblem() : Ok(await ToDtoAsync(user));
+        var result = await _authService.GetCurrentUserAsync();
+        return result.Succeeded ? Ok(result.Value) : result.ToActionResult(this);
     }
-
-    private async Task<AuthUserDto> ToDtoAsync(AppUser user)
-    {
-        var roles = await _userManager.GetRolesAsync(user);
-        return new AuthUserDto(user.Id, user.FullName, user.Email ?? string.Empty, roles.ToArray());
-    }
-
-    private ActionResult UnauthorizedProblem() =>
-        Problem(title: "Credenciais invalidas.", statusCode: StatusCodes.Status401Unauthorized);
 }

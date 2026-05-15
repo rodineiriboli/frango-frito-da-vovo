@@ -1,5 +1,16 @@
+using FrangoFrito.Application.Auth;
+using FrangoFrito.Application.Categories;
+using FrangoFrito.Application.Common.Abstractions;
+using FrangoFrito.Application.Customers;
+using FrangoFrito.Application.Menu;
+using FrangoFrito.Application.Orders;
+using FrangoFrito.Application.Products;
+using FrangoFrito.Application.Security;
 using FrangoFrito.Infrastructure.Identity;
 using FrangoFrito.Infrastructure.Persistence;
+using FrangoFrito.Infrastructure.Persistence.Repositories;
+using FrangoFrito.Infrastructure.Security;
+using FrangoFrito.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,6 +47,17 @@ public static class DependencyInjection
             })
             .AddEntityFrameworkStores<FrangoFritoDbContext>()
             .AddDefaultTokenProviders();
+
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUser, CurrentUser>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IMenuRepository, MenuRepository>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserService, UserService>();
 
         return services;
     }

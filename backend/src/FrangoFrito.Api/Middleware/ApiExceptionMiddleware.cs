@@ -1,6 +1,6 @@
+using FrangoFrito.Application.Common;
 using FrangoFrito.Domain.Common;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FrangoFrito.Api.Middleware;
 
@@ -23,17 +23,17 @@ public sealed class ApiExceptionMiddleware
         }
         catch (DomainException exception)
         {
-            await WriteProblemAsync(context, StatusCodes.Status400BadRequest, "Regra de negocio violada.", exception.Message);
+            await WriteProblemAsync(context, StatusCodes.Status400BadRequest, "Regra de negócio violada.", exception.Message);
         }
-        catch (DbUpdateConcurrencyException exception)
+        catch (ConcurrencyConflictException exception)
         {
-            _logger.LogWarning(exception, "Conflito de concorrencia ao salvar dados.");
-            await WriteProblemAsync(context, StatusCodes.Status409Conflict, "Conflito de concorrencia.", "O registro foi alterado por outro processo. Recarregue e tente novamente.");
+            _logger.LogWarning(exception, "Conflito de concorrência ao salvar dados.");
+            await WriteProblemAsync(context, StatusCodes.Status409Conflict, "Conflito de concorrência.", exception.Message);
         }
         catch (Exception exception)
         {
             _logger.LogError(exception, "Erro inesperado na API.");
-            await WriteProblemAsync(context, StatusCodes.Status500InternalServerError, "Erro interno.", "Nao foi possivel concluir a operacao.");
+            await WriteProblemAsync(context, StatusCodes.Status500InternalServerError, "Erro interno.", "Não foi possível concluir a operação.");
         }
     }
 

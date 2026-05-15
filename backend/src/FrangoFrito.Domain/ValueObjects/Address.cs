@@ -18,7 +18,7 @@ public sealed class Address
         string? complement)
     {
         Street = Required(street, "Rua");
-        Number = Required(number, "Numero");
+        Number = Required(number, "Número");
         Neighborhood = Required(neighborhood, "Bairro");
         City = Required(city, "Cidade");
         State = Required(state, "Estado").ToUpperInvariant();
@@ -44,7 +44,7 @@ public sealed class Address
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            throw new DomainException($"{field} e obrigatorio.");
+            throw new DomainException($"{field} é obrigatório.");
         }
 
         return value.Trim();

@@ -13,7 +13,7 @@ public sealed class Order : Entity
 
     public Order(Guid customerId)
     {
-        CustomerId = customerId == Guid.Empty ? throw new DomainException("Cliente e obrigatorio.") : customerId;
+        CustomerId = customerId == Guid.Empty ? throw new DomainException("Cliente é obrigatório.") : customerId;
         Status = OrderStatus.Received;
     }
 
@@ -28,7 +28,7 @@ public sealed class Order : Entity
     {
         if (Status != OrderStatus.Received)
         {
-            throw new DomainException("Itens so podem ser alterados em pedidos recebidos.");
+            throw new DomainException("Itens só podem ser alterados em pedidos recebidos.");
         }
 
         var existingItem = _items.FirstOrDefault(item => item.ProductId == product.Id);
@@ -58,7 +58,7 @@ public sealed class Order : Entity
 
         if (!AllowedTransitions.TryGetValue(Status, out var allowed) || !allowed.Contains(newStatus))
         {
-            throw new DomainException($"Transicao de status invalida: {Status} para {newStatus}.");
+            throw new DomainException($"Transição de status inválida: {Status} para {newStatus}.");
         }
 
         Status = newStatus;

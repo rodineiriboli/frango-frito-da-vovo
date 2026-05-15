@@ -32,7 +32,7 @@ public sealed class Customer : Entity
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            throw new DomainException("Nome do cliente e obrigatorio.");
+            throw new DomainException("Nome do cliente é obrigatório.");
         }
 
         Name = name.Trim();
@@ -42,7 +42,7 @@ public sealed class Customer : Entity
     {
         if (string.IsNullOrWhiteSpace(phone))
         {
-            throw new DomainException("Telefone do cliente e obrigatorio.");
+            throw new DomainException("Telefone do cliente é obrigatório.");
         }
 
         Phone = phone.Trim();
@@ -50,6 +50,6 @@ public sealed class Customer : Entity
 
     private void ChangeAddress(Address address)
     {
-        Address = address ?? throw new DomainException("Endereco do cliente e obrigatorio.");
+        Address = address ?? throw new DomainException("Endereço do cliente é obrigatório.");
     }
 }
