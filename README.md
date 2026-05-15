@@ -2,7 +2,7 @@
 
 CRUD full stack para um painel administrativo de delivery de frango frito, criado como projeto de teste para vaga de desenvolvedor .NET sênior.
 
-O objetivo não é entregar um escopo enorme, mas demonstrar uma aplicação pequena tratada com padrão de produção: Clean Architecture, SOLID, autenticação, autorização por perfis, regras de domínio, PostgreSQL, Docker, frontend responsivo e testes automatizados.
+O objetivo é demonstrar uma aplicação pequena tratada com padrão de produção: Clean Architecture, SOLID, autenticação, autorização por perfis, regras de domínio, PostgreSQL, Docker, frontend responsivo e testes automatizados.
 
 ## Stack
 
