@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FrangoFrito.Api/FrangoFrito.Api.csproj" />
+    <Project Path="src/FrangoFrito.Application/FrangoFrito.Application.csproj" />
+    <Project Path="src/FrangoFrito.Domain/FrangoFrito.Domain.csproj" />
+    <Project Path="src/FrangoFrito.Infrastructure/FrangoFrito.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FrangoFrito.IntegrationTests/FrangoFrito.IntegrationTests.csproj" />
+    <Project Path="tests/FrangoFrito.UnitTests/FrangoFrito.UnitTests.csproj" />
+  </Folder>
+</Solution>
